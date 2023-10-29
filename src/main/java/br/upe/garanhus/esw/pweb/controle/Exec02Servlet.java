@@ -1,7 +1,10 @@
 package br.upe.garanhus.esw.pweb.controle;
 
 import java.io.IOException;
-import br.upe.garanhus.esw.pweb.service.RequestService;
+import java.util.List;
+import br.upe.garanhus.esw.pweb.modelo.RequestModel;
+import br.upe.garanhus.esw.pweb.modelo.dtos.IdDTO;
+import br.upe.garanhus.esw.pweb.modelo.servicos.RequestService;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.ServletException;
@@ -24,7 +27,9 @@ public class Exec02Servlet extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {    
-        String resultado = requestService.getImagens();
+        List<RequestModel> imagens = requestService.obterImagens();
+        
+        String resultado = jsonb.toJson(imagens);
         
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -34,7 +39,13 @@ public class Exec02Servlet extends HttpServlet {
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String resultado = requestService.getImagem(request.getReader());
+        String res = requestService.jsonBuilder(request.getReader());
+        
+        IdDTO iddto = jsonb.fromJson(res, IdDTO.class);
+        
+        RequestModel imagem = requestService.obterImagemPorId(iddto);
+        
+        String resultado = jsonb.toJson(imagem);
         
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

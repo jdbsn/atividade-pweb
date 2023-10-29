@@ -1,4 +1,4 @@
-package br.upe.garanhus.esw.pweb.exceptions;
+package br.upe.garanhus.esw.pweb.excecoes;
 
 public class AplicacaoException extends RuntimeException {
 
