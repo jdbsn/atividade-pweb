@@ -4,6 +4,10 @@ public class IdDTO {
 
     private String id;
     
+    public IdDTO() {
+
+    }
+    
     public IdDTO(String id) {
       this.id = id;
     }
