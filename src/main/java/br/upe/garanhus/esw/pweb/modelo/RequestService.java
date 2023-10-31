@@ -1,4 +1,4 @@
-package br.upe.garanhus.esw.pweb.modelo.servicos;
+package br.upe.garanhus.esw.pweb.modelo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import br.upe.garanhus.esw.pweb.excecoes.AplicacaoException;
-import br.upe.garanhus.esw.pweb.modelo.RequestModel;
-import br.upe.garanhus.esw.pweb.modelo.dtos.IdDTO;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 
@@ -22,16 +19,15 @@ public class RequestService {
     private static final String URI_GET = "https://api.thecatapi.com/v1/images/search?limit=10";
     private static final String URI_POST = "https://api.thecatapi.com/v1/images/";
     private static final String MSG_ID_INVALIDO = "ID inválido.";
-    private static final String MSG_ERRO = "Ocorreu um erro.";
     
     private HttpClient client;
-    private Jsonb jsonb = JsonbBuilder.create();
+    private Jsonb jsonb;
     private Logger logger;
   
-    
     public RequestService() {
         this.client = HttpClient.newBuilder().build();
         this.logger = Logger.getLogger(RequestService.class.getName());
+        this.jsonb = JsonbBuilder.create();
     }
     
     public List<RequestModel> obterImagens() throws AplicacaoException {
@@ -47,7 +43,7 @@ public class RequestService {
             
             return imagens;
         } catch (Exception e) {
-            throw new AplicacaoException(e.getMessage(), e); 
+            throw new AplicacaoException(500, e.getMessage(), e); 
         }
     }
     
@@ -55,18 +51,18 @@ public class RequestService {
       
         RequestModel requestModel;
         
-        try {     
+        try {  
             HttpResponse<String> resposta = enviarRequisicao(URI_POST + iddto.getId());
             
             if(resposta.statusCode() == 400) {
-                throw new AplicacaoException(MSG_ID_INVALIDO, null);
+                throw new AplicacaoException(500, MSG_ID_INVALIDO, null);
             }
             
             requestModel = jsonb.fromJson(resposta.body(), RequestModel.class);
             
             return requestModel;
         } catch (Exception e) {
-            throw new AplicacaoException(e.getMessage(), e);
+            throw new AplicacaoException(500, e.getMessage(), e);
         }
       
     }

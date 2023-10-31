@@ -20,7 +20,7 @@
   </servlet>
   
   <error-page>
-    <exception-type>br.upe.garanhus.esw.pweb.excecoes.AplicacaoException</exception-type>
+    <exception-type>br.upe.garanhus.esw.pweb.modelo.AplicacaoException</exception-type>
     <location>/errorHandler</location>
   </error-page>
 

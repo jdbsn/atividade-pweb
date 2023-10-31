@@ -1,4 +1,4 @@
-package br.upe.garanhus.esw.pweb;
+package br.upe.garanhus.esw.pweb.modelo;
 
 import jakarta.json.bind.annotation.JsonbProperty;
 

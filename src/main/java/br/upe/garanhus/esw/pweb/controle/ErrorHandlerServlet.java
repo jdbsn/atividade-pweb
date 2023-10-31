@@ -3,9 +3,9 @@ package br.upe.garanhus.esw.pweb.controle;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import br.upe.garanhus.esw.pweb.Erro;
-import br.upe.garanhus.esw.pweb.excecoes.AplicacaoException;
-import br.upe.garanhus.esw.pweb.modelo.servicos.RequestService;
+import br.upe.garanhus.esw.pweb.modelo.AplicacaoException;
+import br.upe.garanhus.esw.pweb.modelo.Erro;
+import br.upe.garanhus.esw.pweb.modelo.RequestService;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.RequestDispatcher;
@@ -20,10 +20,12 @@ public class ErrorHandlerServlet extends HttpServlet {
   
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger;
+	private transient Logger logger;
+	private transient Jsonb jsonb;
 	
     public ErrorHandlerServlet() {
         this.logger = Logger.getLogger(RequestService.class.getName());
+        this.jsonb = JsonbBuilder.create();
     }
     
     @Override
@@ -41,15 +43,15 @@ public class ErrorHandlerServlet extends HttpServlet {
         
         logger.log(Level.SEVERE, appExc.getMessage(), appExc.getCause());
         
-        Erro erro = new Erro(500, appExc.getMessage(), appExc.getCause().getClass().getName());
-        Jsonb jsonb = JsonbBuilder.create();
+        Erro erro = new Erro(appExc.getCodigoErro() , appExc.getMessage(), appExc.getCause().getClass().getName());
+        
         String resultado = jsonb.toJson(erro);
         
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(resultado);
         
-        response.setStatus(500);
+        response.setStatus(erro.getCodigo());
     }
 
 }

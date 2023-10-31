@@ -1,7 +1,10 @@
-package br.upe.garanhus.esw.pweb.modelo.dtos;
+package br.upe.garanhus.esw.pweb.modelo;
+
+import jakarta.json.bind.annotation.JsonbProperty;
 
 public class IdDTO {
 
+    @JsonbProperty("id")
     private String id;
     
     public IdDTO() {
@@ -14,6 +17,10 @@ public class IdDTO {
 
     public String getId() {
       return id;
+    }
+    
+    public void setId(String id) {
+      this.id = id;
     }
   
 }
