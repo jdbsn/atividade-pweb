@@ -24,6 +24,12 @@ public class Erro {
   public String getMensagem() {
     return mensagem;
   }
+  
+  
+
+  public void setMensagem(String mensagem) {
+    this.mensagem = mensagem;
+  }
 
   public String getOrigem() {
     return origem;

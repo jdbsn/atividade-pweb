@@ -16,7 +16,7 @@ import jakarta.json.bind.JsonbBuilder;
 
 public class RequestService {
 
-    private static final String URI_GET = "https://api.thecatapi.com/v1/images/search?limit=10";
+    private static final String URI_GET = "https://api.theapi.com/v1/images/search?limit=10";
     private static final String URI_POST = "https://api.thecatapi.com/v1/images/";
     private static final String MSG_ID_INVALIDO = "ID inválido.";
     
@@ -31,20 +31,15 @@ public class RequestService {
     }
     
     public List<RequestModel> obterImagens() throws AplicacaoException {
-    
         List<RequestModel> imagens;
         
-        try {
-            HttpResponse<String> response = enviarRequisicao(URI_GET);
+        HttpResponse<String> response = enviarRequisicao(URI_GET);
             
-            imagens = jsonb.fromJson(
-                response.body(), new ArrayList<RequestModel>(){}.getClass().getGenericSuperclass()
-                );
+        imagens = jsonb.fromJson(
+            response.body(), new ArrayList<RequestModel>(){}.getClass().getGenericSuperclass()
+            );
             
-            return imagens;
-        } catch (Exception e) {
-            throw new AplicacaoException(500, e.getMessage(), e); 
-        }
+        return imagens;
     }
     
     public RequestModel obterImagemPorId(IdDTO iddto) throws IOException {
@@ -67,9 +62,17 @@ public class RequestService {
       
     }
     
-    public HttpResponse<String> enviarRequisicao(String uri) throws IOException, InterruptedException  {
+    public HttpResponse<String> enviarRequisicao(String uri)  {
         HttpRequest requisicao = HttpRequest.newBuilder().uri(URI.create(uri)).GET().build();
-        HttpResponse<String> resposta = client.send(requisicao, BodyHandlers.ofString());
+        HttpResponse<String> resposta;
+        try {
+          resposta = client.send(requisicao, BodyHandlers.ofString());
+        } catch (IOException e) {
+          throw new AplicacaoException(500, e.getMessage(), e);
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          throw new AplicacaoException(500, e.getMessage(), e);
+        }
         
         String resultado = resposta.body();
         

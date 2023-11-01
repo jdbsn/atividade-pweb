@@ -50,6 +50,4 @@ public class RequestModel {
     this.height = height;
   }
   
-  
-  
 }

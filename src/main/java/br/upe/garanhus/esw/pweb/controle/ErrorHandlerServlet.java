@@ -43,14 +43,13 @@ public class ErrorHandlerServlet extends HttpServlet {
         
         logger.log(Level.SEVERE, appExc.getMessage(), appExc.getCause());
         
-        Erro erro = new Erro(appExc.getCodigoErro() , appExc.getMessage(), appExc.getCause().getClass().getName());
+        Erro erro = new Erro(appExc.getCodigoErro(), appExc.getMessage(), appExc.getCause().getClass().getName());
         
         String resultado = jsonb.toJson(erro);
         
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(resultado);
-        
         response.setStatus(erro.getCodigo());
     }
 
