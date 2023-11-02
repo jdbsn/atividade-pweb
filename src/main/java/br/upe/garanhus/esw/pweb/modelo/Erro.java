@@ -8,13 +8,13 @@ public class Erro {
   private int codigo;
   @JsonbProperty("mensagem")
   private String mensagem;
-  @JsonbProperty("origem")
-  private String origem;
+  @JsonbProperty("detalhe")
+  private String detalhe;
   
-  public Erro(int codigo, String mensagem, String origem) {
+  public Erro(int codigo, String mensagem, String detalhe) {
     this.codigo = codigo;
     this.mensagem = mensagem;
-    this.origem = origem;
+    this.detalhe = detalhe;
   }
 
   public int getCodigo() {
@@ -25,14 +25,12 @@ public class Erro {
     return mensagem;
   }
   
-  
-
   public void setMensagem(String mensagem) {
     this.mensagem = mensagem;
   }
 
-  public String getOrigem() {
-    return origem;
+  public String getDetalhe() {
+    return detalhe;
   }
   
 }

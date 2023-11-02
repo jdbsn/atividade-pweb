@@ -16,21 +16,21 @@ import jakarta.json.bind.JsonbBuilder;
 
 public class RequestService {
 
-    private static final String URI_GET = "https://api.theapi.com/v1/images/search?limit=10";
+    private static final String URI_GET = "https://api.thecatapi.com/v1/images/search?limit=10";
     private static final String URI_POST = "https://api.thecatapi.com/v1/images/";
     private static final String MSG_ID_INVALIDO = "ID inválido.";
     
+    private static final Logger LOGGER = Logger.getLogger(RequestService.class.getName());
+    
     private HttpClient client;
     private Jsonb jsonb;
-    private Logger logger;
   
     public RequestService() {
         this.client = HttpClient.newBuilder().build();
-        this.logger = Logger.getLogger(RequestService.class.getName());
         this.jsonb = JsonbBuilder.create();
     }
     
-    public List<RequestModel> obterImagens() throws AplicacaoException {
+    public List<RequestModel> obterImagens() {
         List<RequestModel> imagens;
         
         HttpResponse<String> response = enviarRequisicao(URI_GET);
@@ -42,43 +42,37 @@ public class RequestService {
         return imagens;
     }
     
-    public RequestModel obterImagemPorId(IdDTO iddto) throws IOException {
-      
-        RequestModel requestModel;
-        
-        try {  
-            HttpResponse<String> resposta = enviarRequisicao(URI_POST + iddto.getId());
+    public RequestModel obterImagemPorId(IdDTO iddto) {
+        HttpResponse<String> resposta = enviarRequisicao(URI_POST + iddto.getId());
             
-            if(resposta.statusCode() == 400) {
-                throw new AplicacaoException(500, MSG_ID_INVALIDO, null);
-            }
-            
-            requestModel = jsonb.fromJson(resposta.body(), RequestModel.class);
-            
-            return requestModel;
-        } catch (Exception e) {
-            throw new AplicacaoException(500, e.getMessage(), e);
+        if(resposta.statusCode() == 400) {
+            throw new AplicacaoException(500, MSG_ID_INVALIDO, new AplicacaoException());
         }
-      
+        
+        RequestModel requestModel = jsonb.fromJson(resposta.body(), RequestModel.class);
+            
+        return requestModel;
     }
     
-    public HttpResponse<String> enviarRequisicao(String uri)  {
-        HttpRequest requisicao = HttpRequest.newBuilder().uri(URI.create(uri)).GET().build();
-        HttpResponse<String> resposta;
+    public HttpResponse<String> enviarRequisicao(String uri) {
+
         try {
+          HttpRequest requisicao = HttpRequest.newBuilder().uri(URI.create(uri)).GET().build();
+          HttpResponse<String> resposta;
+          
           resposta = client.send(requisicao, BodyHandlers.ofString());
-        } catch (IOException e) {
-          throw new AplicacaoException(500, e.getMessage(), e);
+          String resultado = resposta.body();
+          
+          LOGGER.log(Level.INFO, resultado);
+          
+          return resposta;
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
           throw new AplicacaoException(500, e.getMessage(), e);
+        } catch (Exception e) {
+          throw new AplicacaoException(500, e.getMessage(), e);
         }
         
-        String resultado = resposta.body();
-        
-        logger.log(Level.INFO, resultado);
-        
-        return resposta;
     }
     
     public String jsonBuilder(BufferedReader reader) throws IOException {

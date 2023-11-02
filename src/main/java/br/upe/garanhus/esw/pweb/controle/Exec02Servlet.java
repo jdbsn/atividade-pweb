@@ -39,7 +39,7 @@ public class Exec02Servlet extends HttpServlet {
     }
     
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String res = requestService.jsonBuilder(request.getReader());
         IdDTO iddto = jsonb.fromJson(res, IdDTO.class);
         

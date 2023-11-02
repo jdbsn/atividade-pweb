@@ -20,11 +20,10 @@ public class ErrorHandlerServlet extends HttpServlet {
   
 	private static final long serialVersionUID = 1L;
 
-	private transient Logger logger;
+	private static final Logger LOGGER = Logger.getLogger(RequestService.class.getName());
 	private transient Jsonb jsonb;
 	
     public ErrorHandlerServlet() {
-        this.logger = Logger.getLogger(RequestService.class.getName());
         this.jsonb = JsonbBuilder.create();
     }
     
@@ -41,7 +40,7 @@ public class ErrorHandlerServlet extends HttpServlet {
     private void processarErro(HttpServletRequest request, HttpServletResponse response) throws IOException {
         AplicacaoException appExc = (AplicacaoException) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         
-        logger.log(Level.SEVERE, appExc.getMessage(), appExc.getCause());
+        LOGGER.log(Level.SEVERE, appExc.getMessage(), appExc.getCause());
         
         Erro erro = new Erro(appExc.getCodigoErro(), appExc.getMessage(), appExc.getCause().getClass().getName());
         
